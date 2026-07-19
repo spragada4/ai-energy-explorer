@@ -1,0 +1,107 @@
+model_name,organization,release_date,params,training_flop,params_billion
+Claude Mythos 5,Anthropic,2026-06-09,,,
+Claude Fable 5,Anthropic,2026-06-09,,,
+DeepSeek-V4-Pro,DeepSeek,2026-04-24,1600000000000.0,9.702e+24,1600.0
+DeepSeek-V4-Flash,DeepSeek,2026-04-24,284000000000.0,2.496e+24,284.0
+GPT-5.5 Pro,OpenAI,2026-04-23,,,
+GPT-5.5,OpenAI,2026-04-23,,,
+GPT Image 2,OpenAI,2026-04-21,,,
+Claude Opus 4.7,Anthropic,2026-04-16,,,
+Gemini Flash 3.1 TTS,Google DeepMind,2026-04-15,,,
+GPT-5.4 Pro,OpenAI,2026-03-05,,,
+GPT-5.4,OpenAI,2026-03-05,,,
+Gemini 3.0 Flash-lite,Google DeepMind,2026-03-03,,,
+Gemini 3.1 Pro,Google DeepMind,2026-02-19,,,
+GPT-5.3 Codex,OpenAI,2026-02-05,,,
+GPT-5.2 Codex,OpenAI,2025-12-18,,,
+GPT-5.2 Pro,OpenAI,2025-12-11,,,
+GPT-5.2,OpenAI,2025-12-11,,,
+DeepSeekMath-V2,DeepSeek,2025-11-27,685000000000.0,,685.0
+Claude Opus 4.5,Anthropic,2025-11-24,,,
+Gemini 3 Pro Image (Nano Banana Pro),Google DeepMind,2025-11-20,,,
+GPT-5.1-Codex-Max,OpenAI,2025-11-19,,,
+Gemini 3 Pro,Google DeepMind,2025-11-18,,,
+GPT-5.1 Instant,OpenAI,2025-11-13,,,
+GPT-5.1,OpenAI,2025-11-13,,,
+GPT-5.1-Codex,OpenAI,2025-11-12,,,
+Claude Haiku 4.5,Anthropic,2025-10-15,,,
+GPT-5 Pro,OpenAI,2025-10-07,,,
+Claude Sonnet 4.5,Anthropic,2025-09-29,,,
+Gemini Robotics-ER 1.5,Google DeepMind,2025-09-25,,,
+Gemini 2.5 Flash Image (Nano Banana),Google,2025-08-26,,,
+GPT-5 nano,OpenAI,2025-08-07,,,
+GPT-5 mini,OpenAI,2025-08-07,,,
+GPT-5,OpenAI,2025-08-07,,6.6e+25,
+gpt-oss-120b,OpenAI,2025-08-05,116830000000.0,4.94e+24,116.83
+gpt-oss-20b,OpenAI,2025-08-05,20910000000.0,5.49e+23,20.91
+Claude Opus 4.1,Anthropic,2025-08-05,,,
+Gemini 2.5 Deep Think,"Google,Google DeepMind",2025-08-01,,,
+Gemini Embedding,Google DeepMind,2025-07-14,,,
+Gemini 2.5 Pro (Jun 2025),Google DeepMind,2025-06-05,,,
+DeepSeek-R1 (May 2025),DeepSeek,2025-05-28,671000000000.0,4.020010000000001e+24,671.0
+Claude Sonnet 4,Anthropic,2025-05-22,,,
+Claude Opus 4,Anthropic,2025-05-22,,,
+Gemini 2.5 Pro (May 2025),Google DeepMind,2025-05-06,,,
+gpt-image-1,OpenAI,2025-04-23,,,
+Llama 4 Scout,Meta AI,2025-04-05,109000000000.0,4.08e+24,109.0
+Llama 4 Maverick,Meta AI,2025-04-05,400000000000.0,2.244000000001e+24,400.0
+Llama 4 Behemoth (preview),Meta AI,2025-04-05,2000000000000.0,5.18400000000001e+25,2000.0
+GPT-4o (Mar 2025),OpenAI,2025-03-27,,,
+Gemini 2.5 Pro (Mar 2025),Google DeepMind,2025-03-25,,,
+DeepSeek-V3 (Mar 2025),DeepSeek,2025-03-24,671000000000.0,3.3e+24,671.0
+GPT-4.5,OpenAI,2025-02-27,,3.8e+26,
+Claude 3.7 Sonnet,Anthropic,2025-02-24,,3.3499999999999998e+25,
+GPT-4o (Jan 2025),OpenAI,2025-01-29,,,
+DeepSeek-R1,DeepSeek,2025-01-20,671000000000.0,3.4999999999999997e+24,671.0
+DeepSeek-V3,DeepSeek,2024-12-24,671000000000.0,3.3e+24,671.0
+Gemini 2.0 Pro,Google DeepMind,2024-12-11,,,
+Llama 3.3 70B,Meta AI,2024-12-06,70000000000.0,6.8649768e+24,70.0
+GPT-4o (Nov 2024),OpenAI,2024-11-20,,,
+Gemini-Exp-1114,Google DeepMind,2024-11-15,,,
+Llama 3.2 11B,Meta AI,2024-09-24,10600000000.0,5.79e+23,10.6
+DeepSeek-V2.5,DeepSeek,2024-09-06,236000000000.0,1.7892e+24,236.0
+GPT-4o (Aug 2024),OpenAI,2024-08-06,,,
+Llama 3.1-405B,Meta AI,2024-07-23,405000000000.0,3.8e+25,405.0
+GPT-4o mini,OpenAI,2024-07-18,,,
+Claude 3.5 Sonnet,Anthropic,2024-06-20,,2.700000000000001e+25,
+DeepSeek-Coder-V2 236B,DeepSeek,2024-06-17,236000000000.0,1.2852e+24,236.0
+Llama-3.1-Nemotron-70B-Instruct,"NVIDIA,Meta AI",2024-06-12,,7.929e+24,
+GPT-4o,OpenAI,2024-05-13,,,
+Llama 3-70B,Meta AI,2024-04-18,70000000000.0,7.861e+24,70.0
+GPT-4 Turbo (Apr 2024),OpenAI,2024-04-09,,,
+Claude 3 Sonnet,Anthropic,2024-03-04,,,
+Claude 3 Opus,Anthropic,2024-03-04,,,
+Gemini 1.5 Pro,Google DeepMind,2024-02-15,,,
+Gemini Nano-2,Google DeepMind,2023-12-19,3250000000.0,,3.25
+Gemini Nano-1,Google DeepMind,2023-12-19,1800000000.0,,1.8
+Llama Guard,Meta AI,2023-12-07,7000000000.0,1.6e+23,7.0
+Gemini 1.0 Ultra,Google DeepMind,2023-12-06,,5.0000000001e+25,
+Gemini 1.0 Pro,Google DeepMind,2023-12-06,,,
+Claude 2.1,Anthropic,2023-11-21,,,
+AndesGPT,Oppo Mobile Telecommunications,2023-11-16,,,
+SPHINX (Llama 2 13B),"Shanghai AI Lab,Chinese University of Hong Kong (CUHK),ShanghaiTech University",2023-11-13,19900000000.0,3.04e+22,19.9
+GPT-4 Turbo (Nov 2023),OpenAI,2023-11-06,,,
+FinGPT-13B,"University of California Los Angeles (UCLA),Columbia University,New York University (NYU)",2023-10-07,13000000000.0,1.6e+23,13.0
+GPT-3.5 Turbo Instruct,OpenAI,2023-09-28,20000000000.0,,20.0
+GPT-4V,OpenAI,2023-09-25,,,
+Llama 2-70B,Meta AI,2023-07-18,70000000000.0,8.1e+23,70.0
+Llama 2-7B,Meta AI,2023-07-18,7000000000.0,8.4e+22,7.0
+GPT3-2.7B (FlashAttention-2),"Stanford University,Princeton University",2023-07-18,2700000000.0,,2.7
+Claude 2,Anthropic,2023-07-11,,3.866e+24,
+GPT-4 (Jun 2023),OpenAI,2023-06-13,1800000000000.0,2.1e+25,1800.0
+GPT-3.5 Turbo,OpenAI,2023-06-13,20000000000.0,,20.0
+BloombergGPT,"Bloomberg,Johns Hopkins University",2023-03-30,50558868480.0,2.36e+23,50.55886848
+GPT-4 (Mar 2023),OpenAI,2023-03-15,1800000000000.0,2.1e+25,1800.0
+Claude,Anthropic,2023-03-14,,,
+LLaMA-65B,Meta AI,2023-02-24,65200000000.0,5.5e+23,65.2
+GPT-2 Medium (FlashAttention),"Stanford University,University at Buffalo",2022-05-27,355000000.0,8.9280922e+20,0.355
+"GPT-3.5 (davinci-002)
+",OpenAI,2022-03-15,,2.578e+24,
+GPT-NeoX-20B,EleutherAI,2022-02-09,20000000000.0,9.31627008e+22,20.0
+InstructGPT 175B,OpenAI,2022-01-27,175000000000.0,3.19181e+23,175.0
+InstructGPT 6B,OpenAI,2022-01-27,6000000000.0,,6.0
+InstructGPT 1.3B,OpenAI,2022-01-27,1300000000.0,,1.3
+GPT-3 175B (davinci),OpenAI,2020-05-28,174600000000.0,3.14e+23,174.6
+GPT-2 (1.5B),OpenAI,2019-02-14,1500000000.0,1.920000000001e+21,1.5
+GPT-1,OpenAI,2018-06-01,117000000.0,1.7578125e+19,0.117
+Gemini 3.5 Flash,Google,,,,

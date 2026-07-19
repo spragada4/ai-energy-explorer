@@ -1,0 +1,7 @@
+model_name,prompt_length_bucket,input_tokens,output_tokens,energy_wh,source
+Gemini 2.5 Pro (May 2025),short,100,300,0.24,google_2025
+GPT-4o,short,100,300,0.34,nano_gpt_estimate_gpt4o_assumed
+Claude 3.7 Sonnet,short,100,300,0.84,jegham_2025
+DeepSeek-R1,short,100,300,23.8,jegham_2025
+LLaMA-3.2-1B,short,100,300,0.07,jegham_2025
+Gemini 2.5 Pro (May 2025),long,10000,1500,1.9,google_2025_extrapolated

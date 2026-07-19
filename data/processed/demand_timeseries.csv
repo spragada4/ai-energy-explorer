@@ -1,0 +1,10 @@
+year,scenario,twh
+2022,historical,460
+2024,historical,415
+2025,historical,475
+2026,base,620
+2028,base,780
+2030,base,945
+2035,base,1150
+2030,high_efficiency,850
+2035,high_efficiency,970
