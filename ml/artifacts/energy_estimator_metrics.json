@@ -1,18 +1,18 @@
 {
   "baseline_mean": {
-    "mae_log_wh": 1.2235,
-    "r2": -0.2346
+    "mae_log_wh": 0.9816,
+    "r2": -0.0754
   },
   "linear_regression": {
-    "mae_log_wh": 0.7337,
-    "r2": 0.5104
+    "mae_log_wh": 0.4186,
+    "r2": 0.7328
   },
   "random_forest": {
-    "mae_log_wh": 0.7909,
-    "r2": 0.4295
+    "mae_log_wh": 0.5392,
+    "r2": 0.6177
   },
   "_meta": {
-    "n_rows": 10,
+    "n_rows": 28,
     "feature_cols": [
       "log_total_tokens",
       "is_long_prompt",
@@ -20,6 +20,7 @@
       "org_Anthropic",
       "org_DeepSeek",
       "org_Google DeepMind",
+      "org_Meta AI",
       "org_OpenAI"
     ]
   }
