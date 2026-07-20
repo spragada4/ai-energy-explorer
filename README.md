@@ -1,6 +1,6 @@
 # AI Energy Efficiency Explorer
 
-**Status: Work in progress — Phase 2 (Model A: energy estimator) complete. Phase 3 (API + frontend) not started.**
+**Status: Work in progress — Phase 3 in progress. API (predict/energy) built, tested, and verified end-to-end. Frontend estimator page not yet built.**
 
 An interactive dashboard exploring AI energy consumption and efficiency — not just
 displaying static projections, but predicting per-inference energy cost, ranking
@@ -25,9 +25,12 @@ ai-energy-explorer/
 ├── ml/
 │   ├── features/         # feature engineering (joins specs + energy data)
 │   ├── train/             # training scripts, one per model task
-│   └── artifacts/         # trained models + metrics.json (gitignored)
-├── api/                  # (Phase 3+) FastAPI backend
-├── frontend/            # (Phase 3+) Next.js dashboard
+│   └── artifacts/         # trained models + metrics.json (metrics.json committed, .pkl gitignored)
+├── api/
+│   ├── main.py            # FastAPI app
+│   ├── schemas.py         # request/response models
+│   └── routes/predict.py  # /predict/energy — done
+├── frontend/            # Next.js dashboard — estimator page not yet built
 ├── tests/
 └── docs/
 ```
@@ -75,32 +78,59 @@ outperformed random forest on this task. With a small, largely categorical
 feature set, added model complexity didn't pay for itself — a legitimate
 result, not a failed experiment.
 
-**Key modeling decisions, made explicitly rather than defaulted into:**
-- **No parameter-count feature.** Most proprietary models (GPT-4o, Claude,
-  Gemini) don't disclose parameter counts, so `organization` is used as a
-  coarse infrastructure proxy instead.
+Key modeling decisions:
+- **No parameter-count feature** — most proprietary models don't disclose
+  parameter counts, so `organization` is used as a coarse infrastructure proxy.
 - **`is_reasoning_or_heavy` flag added by hand** for DeepSeek-R1 and GPT-4.5 —
-  both are energy outliers in the source data (DeepSeek-R1 via chain-of-thought,
-  GPT-4.5 for architectural reasons per Jegham et al.'s own discussion). This
-  single feature raised R² from ~0.13 to ~0.51 on the earlier, smaller dataset.
+  both are energy outliers in the source data. This single feature raised R²
+  from ~0.13 to ~0.51 on an earlier, smaller version of the dataset.
 - **Leave-One-Out CV**, not a train/test split — the dataset is too small for
   a single held-out split to be meaningful.
 - **XGBoost swapped for a shallow, regularized Random Forest** at this dataset
   size; XGBoost's defaults would overfit n=28 across only 9 distinct models.
-  Revisit XGBoost once the dataset grows further.
 
 ```bash
 python -m ml.train.train_energy_estimator
+pytest tests/test_features.py tests/test_train_energy_estimator.py -v
 ```
 
-Outputs `ml/artifacts/energy_estimator_{model}.pkl` and
-`ml/artifacts/energy_estimator_metrics.json`.
+### Phase 3 — API: in progress (backend done, frontend next)
+
+`POST /predict/energy` is live, tested, and verified against real training
+data via manual curl checks:
+
+| Input | Predicted | Compares to actual training value |
+|---|---|---|
+| OpenAI, short prompt, no reasoning flag | 0.383 Wh | ~0.42 Wh (GPT-4o / GPT-4o mini, short) |
+| OpenAI, short prompt, reasoning flag | 6.709 Wh | 6.723 Wh (GPT-4.5, short — near-exact) |
+| DeepSeek, long prompt, reasoning flag | 61.227 Wh | 33.634 Wh (DeepSeek-R1, long) — over-predicts ~1.8x |
+
+The DeepSeek over-prediction isn't a bug — it's the same high-end
+over-extrapolation already visible in the Phase 2 LOOCV diagnostics for
+DeepSeek-R1's medium/long rows, now confirmed live through the API. Documented
+as a known limitation rather than patched over.
+
+The API builds its feature vector directly from `ml/artifacts/energy_estimator_metrics.json`'s
+`_meta.feature_cols`, rather than hardcoding the one-hot column order a second
+time — this avoids the feature vector silently drifting out of sync with what
+the model was actually trained on.
+
+```bash
+uvicorn api.main:app --reload
+pytest tests/test_api.py -v
+```
+
+**Not yet done:** Next.js estimator page (form → API → rendered result),
+CORS configuration between `localhost:3000` and the API, Docker Compose for
+the full stack.
 
 ### Known limitations
 
 - n=28 rows across 9 distinct models is still small by ML standards — results
-  are directional, not definitive, and are reported with that caveat throughout
-  (including in the eventual API's `confidence_note` field).
+  are directional, not definitive, and are reported with that caveat in the
+  API's `confidence_note` field.
+- Linear regression over-extrapolates at the high end for reasoning-flagged
+  models on long prompts (see DeepSeek-R1 comparison above).
 - `demand_timeseries.csv` interpolates between IEA's published years; only
   2022, 2024, 2025, 2030, and 2035 are IEA's own reported/projected figures.
 - Some `energy_wh` values (e.g. certain GPT-4o figures) are third-party
@@ -122,18 +152,26 @@ source .venv/bin/activate
 pip install -r requirements.txt
 
 cd frontend && npm install && cd ..
+echo "NEXT_PUBLIC_API_URL=http://127.0.0.1:8000" > frontend/.env.local
 ```
 
-## Running the full pipeline
+## Running everything
 
 ```bash
+# data + model (one-time / re-run after data changes)
 curl -o data/raw/notable_ai_models.csv https://epoch.ai/data/notable_ai_models.csv
 curl -o data/raw/ml_hardware.csv https://epoch.ai/data/ml_hardware.csv
-
 python data/etl/run_all.py
+python -m ml.train.train_energy_estimator
+
+# tests
 pytest tests/ -v
 
-python -m ml.train.train_energy_estimator
+# API (terminal 1)
+uvicorn api.main:app --reload
+
+# frontend (terminal 2, once built)
+cd frontend && npm run dev
 ```
 
 ---
@@ -143,7 +181,7 @@ python -m ml.train.train_energy_estimator
 - [x] Phase 0 — repo scaffold, Python/Node environments, Docker skeleton
 - [x] Phase 1 — data pipeline (4 tables, join-checked, tested)
 - [x] Phase 2 — Model A: energy-per-inference estimator (linear vs RF vs baseline, LOOCV, R²=0.73)
-- [ ] Phase 3 — thin vertical slice: API + frontend estimator page, dockerized
+- [ ] Phase 3 — API done, backend tested; frontend estimator page + Docker still pending
 - [ ] Phase 4 — Model B: efficiency tier classifier + SHAP explainability
 - [ ] Phase 5 — Model C: demand forecasting (Prophet vs gradient-boosted trees)
 - [ ] Phase 6 — scenario simulator (parametrized, client-side)
