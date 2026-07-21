@@ -1,6 +1,6 @@
 # AI Energy Efficiency Explorer
 
-**Status: Work in progress — Phase 3 in progress. API (predict/energy) built, tested, and verified end-to-end. Frontend estimator page not yet built.**
+**Status: Work in progress — Phase 3 complete (API + frontend estimator working end-to-end in browser). Docker/production hardening next, then Phase 4.**
 
 An interactive dashboard exploring AI energy consumption and efficiency — not just
 displaying static projections, but predicting per-inference energy cost, ranking
@@ -29,8 +29,9 @@ ai-energy-explorer/
 ├── api/
 │   ├── main.py            # FastAPI app
 │   ├── schemas.py         # request/response models
-│   └── routes/predict.py  # /predict/energy — done
-├── frontend/            # Next.js dashboard — estimator page not yet built
+│   └── routes/predict.py  # /predict/energy
+├── frontend/
+│   └── app/estimator/     # estimator form -> API -> rendered result
 ├── tests/
 └── docs/
 ```
@@ -64,9 +65,6 @@ pytest tests/test_data_pipeline.py -v
 
 **Result: linear regression, MAE (log Wh) = 0.42, R² = 0.73, n=28, Leave-One-Out CV.**
 
-Three models compared on the same feature set (`log_total_tokens`,
-`is_long_prompt`, `is_reasoning_or_heavy`, one-hot `organization`):
-
 | Model | MAE (log Wh) | R² |
 |---|---|---|
 | Baseline (predict mean) | 0.98 | -0.08 |
@@ -74,30 +72,29 @@ Three models compared on the same feature set (`log_total_tokens`,
 | Random forest (max_depth=3) | 0.54 | 0.62 |
 
 **Finding worth keeping for the model-comparison panel:** linear regression
-outperformed random forest on this task. With a small, largely categorical
-feature set, added model complexity didn't pay for itself — a legitimate
-result, not a failed experiment.
+outperformed random forest on this task — added model complexity didn't pay
+for itself on a small, largely categorical feature set.
 
 Key modeling decisions:
 - **No parameter-count feature** — most proprietary models don't disclose
   parameter counts, so `organization` is used as a coarse infrastructure proxy.
 - **`is_reasoning_or_heavy` flag added by hand** for DeepSeek-R1 and GPT-4.5 —
-  both are energy outliers in the source data. This single feature raised R²
-  from ~0.13 to ~0.51 on an earlier, smaller version of the dataset.
-- **Leave-One-Out CV**, not a train/test split — the dataset is too small for
-  a single held-out split to be meaningful.
+  both are energy outliers. This single feature raised R² from ~0.13 to ~0.51
+  on an earlier, smaller version of the dataset.
+- **Leave-One-Out CV**, not a train/test split — dataset too small for a
+  single held-out split to be meaningful.
 - **XGBoost swapped for a shallow, regularized Random Forest** at this dataset
-  size; XGBoost's defaults would overfit n=28 across only 9 distinct models.
+  size to avoid overfitting n=28 across only 9 distinct models.
 
 ```bash
 python -m ml.train.train_energy_estimator
 pytest tests/test_features.py tests/test_train_energy_estimator.py -v
 ```
 
-### Phase 3 — API: in progress (backend done, frontend next)
+### Phase 3 — API + frontend estimator: done
 
 `POST /predict/energy` is live, tested, and verified against real training
-data via manual curl checks:
+data via curl, then verified again through the actual browser UI:
 
 | Input | Predicted | Compares to actual training value |
 |---|---|---|
@@ -105,24 +102,34 @@ data via manual curl checks:
 | OpenAI, short prompt, reasoning flag | 6.709 Wh | 6.723 Wh (GPT-4.5, short — near-exact) |
 | DeepSeek, long prompt, reasoning flag | 61.227 Wh | 33.634 Wh (DeepSeek-R1, long) — over-predicts ~1.8x |
 
-The DeepSeek over-prediction isn't a bug — it's the same high-end
-over-extrapolation already visible in the Phase 2 LOOCV diagnostics for
-DeepSeek-R1's medium/long rows, now confirmed live through the API. Documented
-as a known limitation rather than patched over.
+The DeepSeek over-prediction is a known, documented limitation (high-end
+over-extrapolation for reasoning-flagged models), not a bug — it was already
+visible in Phase 2's LOOCV diagnostics and is simply reconfirmed here.
 
-The API builds its feature vector directly from `ml/artifacts/energy_estimator_metrics.json`'s
-`_meta.feature_cols`, rather than hardcoding the one-hot column order a second
-time — this avoids the feature vector silently drifting out of sync with what
-the model was actually trained on.
+The API builds its feature vector directly from
+`ml/artifacts/energy_estimator_metrics.json`'s `_meta.feature_cols`, rather
+than hardcoding the one-hot column order a second time, so the served feature
+vector can't silently drift out of sync with what the model was trained on.
+
+The frontend is a single Next.js page (`frontend/app/estimator/page.tsx`) —
+a form that POSTs to the API and renders the real returned Wh estimate plus
+its confidence note. Verified working end-to-end in the browser, matching the
+curl results exactly.
 
 ```bash
+# terminal 1, from repo root
 uvicorn api.main:app --reload
+
+# terminal 2
+cd frontend && npm run dev
+# visit http://localhost:3000/estimator
+
 pytest tests/test_api.py -v
 ```
 
-**Not yet done:** Next.js estimator page (form → API → rendered result),
-CORS configuration between `localhost:3000` and the API, Docker Compose for
-the full stack.
+**Not yet done:** Docker Compose for the full stack (next up), CORS
+middleware (not needed yet — same-origin dev setup worked without it, but
+will likely be needed once deployed to separate domains in Phase 9).
 
 ### Known limitations
 
@@ -167,11 +174,12 @@ python -m ml.train.train_energy_estimator
 # tests
 pytest tests/ -v
 
-# API (terminal 1)
+# API (terminal 1, from repo root)
 uvicorn api.main:app --reload
 
-# frontend (terminal 2, once built)
+# frontend (terminal 2)
 cd frontend && npm run dev
+# visit http://localhost:3000/estimator
 ```
 
 ---
@@ -181,7 +189,8 @@ cd frontend && npm run dev
 - [x] Phase 0 — repo scaffold, Python/Node environments, Docker skeleton
 - [x] Phase 1 — data pipeline (4 tables, join-checked, tested)
 - [x] Phase 2 — Model A: energy-per-inference estimator (linear vs RF vs baseline, LOOCV, R²=0.73)
-- [ ] Phase 3 — API done, backend tested; frontend estimator page + Docker still pending
+- [x] Phase 3 — API + frontend estimator page, verified end-to-end in browser
+- [ ] Dockerize the two-service stack (in progress)
 - [ ] Phase 4 — Model B: efficiency tier classifier + SHAP explainability
 - [ ] Phase 5 — Model C: demand forecasting (Prophet vs gradient-boosted trees)
 - [ ] Phase 6 — scenario simulator (parametrized, client-side)
